@@ -1,18 +1,13 @@
-# Ignore everything
-/*
+node_modules
+.pnpm-store
+.turbo
+dist
+apps/*/dist
+apps/*/build
+apps/web/src/routeTree.gen.ts
 
-# Except these files & folders
-!/src
-!index.html
-!package.json
-!tailwind.config.js
-!tsconfig.json
-!tsconfig.node.json
-!vite.config.ts
-!.prettierrc
-!README.md
-!eslint.config.js
-!postcss.config.js
+# Logs
+*.log
 
-# Ignore auto generated routeTree.gen.ts
-/src/routeTree.gen.ts
+# Coverage
+coverage

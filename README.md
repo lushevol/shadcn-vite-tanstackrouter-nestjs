@@ -1,12 +1,24 @@
-# Shadcn Admin Dashboard
+# Shadcn Admin Monorepo
 
-Admin Dashboard UI crafted with Shadcn and Vite. Built with responsiveness and accessibility in mind.
+Admin Dashboard UI crafted with Shadcn and Vite with a companion NestJS API. The repository is now a Turborepo-powered monorepo so both the frontend and backend can be developed together with a single toolchain.
 
-![alt text](public/images/shadcn-admin.png)
+![Shadcn Admin Dashboard](apps/web/public/images/shadcn-admin.png)
 
 I've been creating dashboard UIs at work and for my personal projects. I always wanted to make a reusable collection of dashboard UI for future projects; and here it is now. While I've created a few custom components, some of the code is directly adapted from ShadcnUI examples.
 
 > This is not a starter project (template) though. I'll probably make one in the future.
+
+## Repository structure
+
+```
+apps/
+  api/   # NestJS backend
+  web/   # Vite + React dashboard
+packages/
+  tsconfig/ # Shared TypeScript base config
+```
+
+Turborepo orchestrates tasks across workspaces. Global scripts (e.g. `pnpm dev`) delegate to Turborepo, which in turn runs the package-level commands for each app.
 
 ## Features
 
@@ -51,7 +63,7 @@ If you want to update components using the Shadcn CLI (e.g., `npx shadcn@latest 
 
 - **Modified Components**: These have general updates, potentially including RTL adjustments.
 - **RTL Updated Components**: These have specific changes for RTL language support (e.g., layout, positioning).
-- For implementation details, check the source files in `src/components/ui/`.
+- For implementation details, check the source files in `apps/web/src/components/ui/`.
 - All other Shadcn UI components in the project are standard and can be safely updated via the CLI.
 
 </details>
@@ -66,37 +78,77 @@ If you want to update components using the Shadcn CLI (e.g., `npx shadcn@latest 
 
 **Type Checking:** [TypeScript](https://www.typescriptlang.org/)
 
-**Linting/Formatting:** [Eslint](https://eslint.org/) & [Prettier](https://prettier.io/)
+**Linting/Formatting:** [ESLint](https://eslint.org/) & [Prettier](https://prettier.io/)
+
+**Backend:** [NestJS](https://nestjs.com/)
 
 **Icons:** [Lucide Icons](https://lucide.dev/icons/), [Tabler Icons](https://tabler.io/icons) (Brand icons only)
 
 **Auth (partial):** [Clerk](https://go.clerk.com/GttUAaK)
 
-## Run Locally
+## Getting started
 
-Clone the project
-
-```bash
-  git clone https://github.com/satnaing/shadcn-admin.git
-```
-
-Go to the project directory
+Clone the project:
 
 ```bash
-  cd shadcn-admin
+git clone https://github.com/satnaing/shadcn-admin.git
 ```
 
-Install dependencies
+Change into the project directory:
 
 ```bash
-  pnpm install
+cd shadcn-admin
 ```
 
-Start the server
+Install dependencies for all workspaces:
 
 ```bash
-  pnpm run dev
+pnpm install
 ```
+
+### Run everything
+
+Start the dashboard and API concurrently:
+
+```bash
+pnpm dev
+```
+
+Turborepo will run `pnpm --filter web dev` and `pnpm --filter api dev` in parallel. The web app is available on [http://localhost:5173](http://localhost:5173) by default, and the API listens on port `3000` unless `PORT` is set.
+
+### Work on a single app
+
+Frontend only:
+
+```bash
+pnpm --filter web dev
+```
+
+Backend only:
+
+```bash
+pnpm --filter api dev
+```
+
+### Other scripts
+
+| Command | Description |
+| --- | --- |
+| `pnpm build` | Runs `turbo run build` to compile both apps (Vite build + NestJS build). |
+| `pnpm lint` | Lints all packages. |
+| `pnpm format` | Formats all packages that expose a `format` script. |
+| `pnpm format:check` | Runs Prettier in check mode across the repo. |
+| `pnpm --filter web knip` | Performs dead-code analysis for the frontend. |
+
+## Environment variables
+
+The frontend expects a Clerk publishable key.
+
+```bash
+cp apps/web/.env.example apps/web/.env
+```
+
+Populate the `.env` file and restart the dev server.
 
 ## Sponsoring this project ❤️
 
