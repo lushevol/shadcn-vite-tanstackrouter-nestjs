@@ -98,6 +98,25 @@ Start the server
   pnpm run dev
 ```
 
+## Quality Checks
+
+Run the following commands before opening a pull request to ensure the
+dashboard builds and stays lint-free:
+
+```bash
+# Type-checks and builds the production bundle
+pnpm build
+
+# Runs ESLint across the project
+pnpm lint
+
+# Verifies formatting with Prettier and Tailwind plugins
+pnpm format:check
+
+# Optional: scans for unused files and exports
+pnpm knip
+```
+
 ## Sponsoring this project ❤️
 
 If you find this project helpful or use this in your own work, consider [sponsoring me](https://github.com/sponsors/satnaing) to support development and maintenance. You can [buy me a coffee](https://buymeacoffee.com/satnaing) as well. Don’t worry, every penny helps. Thank you! 🙏
