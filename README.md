@@ -68,6 +68,31 @@ If you want to update components using the Shadcn CLI (e.g., `npx shadcn@latest 
 
 </details>
 
+## Authentication & Mock Database
+
+The NestJS API now exposes JWT authentication backed by a Drizzle-powered SQLite database. A seed script provisions demo users so the dashboard can be exercised without external services.
+
+### Seeding demo data
+
+```bash
+pnpm --filter api db:seed
+```
+
+This command recreates `apps/api/src/db/mock.sqlite` with the latest schema and inserts two demo users:
+
+| Email               | Password     | Roles           |
+| ------------------- | ------------ | --------------- |
+| `admin@example.com` | `password123` | `admin`, `user` |
+| `user@example.com`  | `password123` | `user`          |
+
+### Running locally
+
+1. Install dependencies with `pnpm install` (from the repository root).
+2. Seed the database using the command above (repeat whenever you need to reset credentials).
+3. Start both applications: `pnpm dev`.
+
+The web client authenticates against `http://localhost:3000` by default. Adjust `VITE_API_URL` if your API runs elsewhere.
+
 ## Tech Stack
 
 **UI:** [ShadcnUI](https://ui.shadcn.com) (TailwindCSS + RadixUI)
