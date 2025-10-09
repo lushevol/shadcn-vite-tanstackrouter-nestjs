@@ -1,7 +1,8 @@
 import z from 'zod'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
 import { Users } from '@/features/users'
 import { roles } from '@/features/users/data/data'
+import { useAuthStore } from '@/stores/auth-store'
 
 const usersSearchSchema = z.object({
   page: z.number().optional().catch(1),
@@ -27,6 +28,12 @@ const usersSearchSchema = z.object({
 })
 
 export const Route = createFileRoute('/_authenticated/users/')({
+  beforeLoad: () => {
+    const { auth } = useAuthStore.getState()
+    if (!auth.hasRole('admin')) {
+      throw redirect({ to: '/(errors)/403', replace: true })
+    }
+  },
   validateSearch: usersSearchSchema,
   component: Users,
 })

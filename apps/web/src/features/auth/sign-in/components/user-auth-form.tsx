@@ -1,13 +1,14 @@
-import { useState } from 'react'
-import { z } from 'zod'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { useMutation } from '@tanstack/react-query'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { Loader2, LogIn } from 'lucide-react'
 import { toast } from 'sonner'
-import { IconFacebook, IconGithub } from '@/assets/brand-icons'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useAuthStore } from '@/stores/auth-store'
-import { sleep, cn } from '@/lib/utils'
+import { cn } from '@/lib/utils'
+import { login, type LoginRequest } from '../api/login'
+import { IconFacebook, IconGithub } from '@/assets/brand-icons'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -22,28 +23,21 @@ import { PasswordInput } from '@/components/password-input'
 
 const formSchema = z.object({
   email: z.email({
-    error: (iss) => (iss.input === '' ? 'Please enter your email' : undefined),
+    error: (issue) =>
+      issue.input === '' ? 'Please enter your email' : 'Enter a valid email address',
   }),
-  password: z
-    .string()
-    .min(1, 'Please enter your password')
-    .min(7, 'Password must be at least 7 characters long'),
+  password: z.string().min(1, 'Please enter your password'),
 })
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLFormElement> {
   redirectTo?: string
 }
 
-export function UserAuthForm({
-  className,
-  redirectTo,
-  ...props
-}: UserAuthFormProps) {
-  const [isLoading, setIsLoading] = useState(false)
+export function UserAuthForm({ className, redirectTo, ...props }: UserAuthFormProps) {
   const navigate = useNavigate()
   const { auth } = useAuthStore()
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<LoginRequest>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: '',
@@ -51,35 +45,32 @@ export function UserAuthForm({
     },
   })
 
-  function onSubmit(data: z.infer<typeof formSchema>) {
-    setIsLoading(true)
+  const loginMutation = useMutation({
+    mutationFn: login,
+    onSuccess: (data) => {
+      auth.setSession({ accessToken: data.accessToken, user: data.user })
+      toast.success(`Welcome back, ${data.user.fullName}!`)
 
-    // Mock successful authentication
-    const mockUser = {
-      accountNo: 'ACC001',
-      email: data.email,
-      role: ['user'],
-      exp: Date.now() + 24 * 60 * 60 * 1000, // 24 hours from now
-    }
+      if (redirectTo && typeof window !== 'undefined') {
+        const targetUrl = new URL(redirectTo, window.location.origin)
+        const searchParams = Object.fromEntries(targetUrl.searchParams.entries())
+        navigate({
+          to: targetUrl.pathname as never,
+          search: searchParams as never,
+          replace: true,
+        })
+        return
+      }
 
-    toast.promise(sleep(2000), {
-      loading: 'Signing in...',
-      success: () => {
-        setIsLoading(false)
+      navigate({ to: '/', replace: true })
+    },
+  })
 
-        // Set user and access token
-        auth.setUser(mockUser)
-        auth.setAccessToken('mock-access-token')
-
-        // Redirect to the stored location or default to dashboard
-        const targetPath = redirectTo || '/'
-        navigate({ to: targetPath, replace: true })
-
-        return `Welcome back, ${data.email}!`
-      },
-      error: 'Error',
-    })
+  const onSubmit = (values: LoginRequest) => {
+    loginMutation.mutate(values)
   }
+
+  const isLoading = loginMutation.isPending
 
   return (
     <Form {...form}>
@@ -95,7 +86,7 @@ export function UserAuthForm({
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder='name@example.com' {...field} />
+                <Input autoComplete='email' placeholder='name@example.com' {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -108,7 +99,7 @@ export function UserAuthForm({
             <FormItem className='relative'>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <PasswordInput placeholder='********' {...field} />
+                <PasswordInput autoComplete='current-password' placeholder='********' {...field} />
               </FormControl>
               <FormMessage />
               <Link
