@@ -34,8 +34,8 @@ function decodeToken(token: string): DecodedToken | null {
     const normalized = payload.replace(/-/g, '+').replace(/_/g, '/')
     const decoded = JSON.parse(atob(normalized))
     return decoded as DecodedToken
-  } catch (error) {
-    console.error('Failed to decode JWT payload', error)
+  } catch (_error) {
+    // console.error('Failed to decode JWT payload', error)
     return null
   }
 }
@@ -51,7 +51,7 @@ function parseCookieToken(): string | null {
       const tokenValue = (parsed as { token?: unknown }).token
       return typeof tokenValue === 'string' ? tokenValue : null
     }
-  } catch (error) {
+  } catch (_error) {
     // Ignore JSON parse errors – assume the raw cookie is the token string
     return cookieState
   }

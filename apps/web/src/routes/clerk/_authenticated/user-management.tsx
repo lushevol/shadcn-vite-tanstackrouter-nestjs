@@ -88,7 +88,7 @@ function UserManagement() {
               </div>
               <UsersPrimaryButtons />
             </div>
-            <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-y-0 lg:space-x-12'>
+            <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
               <UsersTable data={users} navigate={navigate} search={search} />
             </div>
           </Main>
@@ -128,7 +128,7 @@ function Unauthorized() {
   return (
     <div className='h-svh'>
       <div className='m-auto flex h-full w-full flex-col items-center justify-center gap-2'>
-        <h1 className='text-[7rem] leading-tight font-bold'>401</h1>
+        <h1 className='text-[7rem] font-bold leading-tight'>401</h1>
         <span className='font-medium'>Unauthorized Access</span>
         <p className='text-muted-foreground text-center'>
           You must be authenticated via Clerk{' '}

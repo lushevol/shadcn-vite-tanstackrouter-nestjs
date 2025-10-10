@@ -1,5 +1,5 @@
+import type { AuthUser } from '@/stores/auth-store'
 import { apiClient } from '@/lib/api-client'
-import { AuthUser } from '@/stores/auth-store'
 
 export interface LoginRequest {
   email: string

@@ -27,7 +27,7 @@ export function ForgotPassword() {
           <ForgotPasswordForm />
         </CardContent>
         <CardFooter>
-          <p className='text-muted-foreground mx-auto px-8 text-center text-sm text-balance'>
+          <p className='text-muted-foreground mx-auto text-balance px-8 text-center text-sm'>
             Don't have an account?{' '}
             <Link
               to='/sign-up'

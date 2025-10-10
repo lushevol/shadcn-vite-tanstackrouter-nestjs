@@ -3,24 +3,15 @@ import { JwtService } from '@nestjs/jwt'
 import bcrypt from 'bcrypt'
 import { eq } from 'drizzle-orm'
 import { db } from '../db/db'
-import { users } from '../db/schema'
+import {
+  roles as rolesTable,
+  userRoles as userRolesTable,
+  users,
+} from '../db/schema'
 import { LoginDto } from './dto/login.dto'
+import { AuthenticatedUser } from './interfaces/authenticated-user'
 import { JwtPayload } from './interfaces/jwt-payload'
-
-interface AuthenticatedUser {
-  id: number
-  email: string
-  fullName: string
-  accountNumber: string
-  roles: string[]
-}
-
-interface LoginResponse {
-  accessToken: string
-  expiresIn: number
-  tokenType: 'Bearer'
-  user: AuthenticatedUser
-}
+import { LoginResponse } from './interfaces/login-response'
 
 @Injectable()
 export class AuthService {
@@ -29,31 +20,30 @@ export class AuthService {
   private async validateUser({ email, password }: LoginDto): Promise<AuthenticatedUser> {
     const user = await db.query.users.findFirst({
       where: eq(users.email, email),
-      with: {
-        userRoles: {
-          with: {
-            role: true,
-          },
-        },
-      },
     })
 
     if (!user) {
-      throw new UnauthorizedException('Invalid email or password')
+      throw new UnauthorizedException('Invalid email or password !')
     }
-
+    
     const passwordValid = await bcrypt.compare(password, user.passwordHash)
 
     if (!passwordValid) {
       throw new UnauthorizedException('Invalid email or password')
     }
 
+    const roleRecords = await db
+      .select({ roleName: rolesTable.name })
+      .from(userRolesTable)
+      .innerJoin(rolesTable, eq(userRolesTable.roleId, rolesTable.id))
+      .where(eq(userRolesTable.userId, user.id))
+
     return {
       id: user.id,
       email: user.email,
       fullName: user.fullName,
       accountNumber: user.accountNumber,
-      roles: user.userRoles.map((userRole) => userRole.role.name),
+      roles: roleRecords.map((record) => record.roleName),
     }
   }
 

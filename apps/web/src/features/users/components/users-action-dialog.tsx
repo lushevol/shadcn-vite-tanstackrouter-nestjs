@@ -162,7 +162,7 @@ export function UsersActionDialog({
                 control={form.control}
                 name='firstName'
                 render={({ field }) => (
-                  <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
+                  <FormItem className='grid grid-cols-6 items-center gap-x-4 gap-y-1 space-y-0'>
                     <FormLabel className='col-span-2 text-end'>
                       First Name
                     </FormLabel>
@@ -182,7 +182,7 @@ export function UsersActionDialog({
                 control={form.control}
                 name='lastName'
                 render={({ field }) => (
-                  <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
+                  <FormItem className='grid grid-cols-6 items-center gap-x-4 gap-y-1 space-y-0'>
                     <FormLabel className='col-span-2 text-end'>
                       Last Name
                     </FormLabel>
@@ -202,7 +202,7 @@ export function UsersActionDialog({
                 control={form.control}
                 name='username'
                 render={({ field }) => (
-                  <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
+                  <FormItem className='grid grid-cols-6 items-center gap-x-4 gap-y-1 space-y-0'>
                     <FormLabel className='col-span-2 text-end'>
                       Username
                     </FormLabel>
@@ -221,7 +221,7 @@ export function UsersActionDialog({
                 control={form.control}
                 name='email'
                 render={({ field }) => (
-                  <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
+                  <FormItem className='grid grid-cols-6 items-center gap-x-4 gap-y-1 space-y-0'>
                     <FormLabel className='col-span-2 text-end'>Email</FormLabel>
                     <FormControl>
                       <Input
@@ -238,7 +238,7 @@ export function UsersActionDialog({
                 control={form.control}
                 name='phoneNumber'
                 render={({ field }) => (
-                  <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
+                  <FormItem className='grid grid-cols-6 items-center gap-x-4 gap-y-1 space-y-0'>
                     <FormLabel className='col-span-2 text-end'>
                       Phone Number
                     </FormLabel>
@@ -257,7 +257,7 @@ export function UsersActionDialog({
                 control={form.control}
                 name='role'
                 render={({ field }) => (
-                  <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
+                  <FormItem className='grid grid-cols-6 items-center gap-x-4 gap-y-1 space-y-0'>
                     <FormLabel className='col-span-2 text-end'>Role</FormLabel>
                     <SelectDropdown
                       defaultValue={field.value}
@@ -277,7 +277,7 @@ export function UsersActionDialog({
                 control={form.control}
                 name='password'
                 render={({ field }) => (
-                  <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
+                  <FormItem className='grid grid-cols-6 items-center gap-x-4 gap-y-1 space-y-0'>
                     <FormLabel className='col-span-2 text-end'>
                       Password
                     </FormLabel>
@@ -296,7 +296,7 @@ export function UsersActionDialog({
                 control={form.control}
                 name='confirmPassword'
                 render={({ field }) => (
-                  <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
+                  <FormItem className='grid grid-cols-6 items-center gap-x-4 gap-y-1 space-y-0'>
                     <FormLabel className='col-span-2 text-end'>
                       Confirm Password
                     </FormLabel>

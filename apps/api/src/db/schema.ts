@@ -17,7 +17,7 @@ export const users = sqliteTable(
     accountNumber: text('account_number').notNull(),
     createdAt: integer('created_at', { mode: 'timestamp_ms' })
       .notNull()
-      .$defaultFn(() => Date.now()),
+      .$defaultFn(() => new Date()),
   },
   (table) => ({
     emailIdx: uniqueIndex('users_email_idx').on(table.email),

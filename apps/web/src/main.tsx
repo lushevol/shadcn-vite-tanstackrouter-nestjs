@@ -50,24 +50,24 @@ const queryClient = new QueryClient({
   },
   queryCache: new QueryCache({
     onError: (error) => {
-        if (error instanceof AxiosError) {
-          if (error.response?.status === 401) {
-            toast.error('Session expired!')
-            useAuthStore.getState().auth.reset()
-            const redirect = `${router.history.location.href}`
-            router.navigate({ to: '/sign-in', search: { redirect } })
-          }
-          if (error.response?.status === 500) {
-            toast.error('Internal Server Error!')
-            router.navigate({ to: '/500' })
-          }
-          if (error.response?.status === 403) {
-            toast.error('You do not have permission to view that page.')
-            router.navigate({ to: '/(errors)/403', replace: true })
-          }
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 401) {
+          toast.error('Session expired!')
+          useAuthStore.getState().auth.reset()
+          const redirect = `${router.history.location.href}`
+          router.navigate({ to: '/sign-in', search: { redirect } })
         }
-      },
-    }),
+        if (error.response?.status === 500) {
+          toast.error('Internal Server Error!')
+          router.navigate({ to: '/500' })
+        }
+        if (error.response?.status === 403) {
+          toast.error('You do not have permission to view that page.')
+          router.navigate({ to: '/(errors)/403', replace: true })
+        }
+      }
+    },
+  }),
 })
 
 // Create a new router instance

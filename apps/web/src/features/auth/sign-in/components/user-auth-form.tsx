@@ -1,14 +1,13 @@
+import { z } from 'zod'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { Loader2, LogIn } from 'lucide-react'
 import { toast } from 'sonner'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { IconFacebook, IconGithub } from '@/assets/brand-icons'
 import { useAuthStore } from '@/stores/auth-store'
 import { cn } from '@/lib/utils'
-import { login, type LoginRequest } from '../api/login'
-import { IconFacebook, IconGithub } from '@/assets/brand-icons'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -20,11 +19,14 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/password-input'
+import { login, type LoginRequest } from '../api/login'
 
 const formSchema = z.object({
   email: z.email({
     error: (issue) =>
-      issue.input === '' ? 'Please enter your email' : 'Enter a valid email address',
+      issue.input === ''
+        ? 'Please enter your email'
+        : 'Enter a valid email address',
   }),
   password: z.string().min(1, 'Please enter your password'),
 })
@@ -33,7 +35,11 @@ interface UserAuthFormProps extends React.HTMLAttributes<HTMLFormElement> {
   redirectTo?: string
 }
 
-export function UserAuthForm({ className, redirectTo, ...props }: UserAuthFormProps) {
+export function UserAuthForm({
+  className,
+  redirectTo,
+  ...props
+}: UserAuthFormProps) {
   const navigate = useNavigate()
   const { auth } = useAuthStore()
 
@@ -53,7 +59,9 @@ export function UserAuthForm({ className, redirectTo, ...props }: UserAuthFormPr
 
       if (redirectTo && typeof window !== 'undefined') {
         const targetUrl = new URL(redirectTo, window.location.origin)
-        const searchParams = Object.fromEntries(targetUrl.searchParams.entries())
+        const searchParams = Object.fromEntries(
+          targetUrl.searchParams.entries()
+        )
         navigate({
           to: targetUrl.pathname as never,
           search: searchParams as never,
@@ -86,7 +94,11 @@ export function UserAuthForm({ className, redirectTo, ...props }: UserAuthFormPr
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input autoComplete='email' placeholder='name@example.com' {...field} />
+                <Input
+                  autoComplete='email'
+                  placeholder='name@example.com'
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -99,12 +111,16 @@ export function UserAuthForm({ className, redirectTo, ...props }: UserAuthFormPr
             <FormItem className='relative'>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <PasswordInput autoComplete='current-password' placeholder='********' {...field} />
+                <PasswordInput
+                  autoComplete='current-password'
+                  placeholder='********'
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
               <Link
                 to='/forgot-password'
-                className='text-muted-foreground absolute end-0 -top-0.5 text-sm font-medium hover:opacity-75'
+                className='text-muted-foreground absolute -top-0.5 end-0 text-sm font-medium hover:opacity-75'
               >
                 Forgot password?
               </Link>

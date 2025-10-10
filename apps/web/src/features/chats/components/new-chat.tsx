@@ -54,13 +54,13 @@ export function NewChat({ users, onOpenChange, open }: NewChatProps) {
           <DialogTitle>New message</DialogTitle>
         </DialogHeader>
         <div className='flex flex-col gap-4'>
-          <div className='flex flex-wrap items-baseline-last gap-2'>
+          <div className='items-baseline-last flex flex-wrap gap-2'>
             <span className='text-muted-foreground min-h-6 text-sm'>To:</span>
             {selectedUsers.map((user) => (
               <Badge key={user.id} variant='default'>
                 {user.fullName}
                 <button
-                  className='ring-offset-background focus:ring-ring ms-1 rounded-full outline-hidden focus:ring-2 focus:ring-offset-2'
+                  className='ring-offset-background focus:ring-ring outline-hidden ms-1 rounded-full focus:ring-2 focus:ring-offset-2'
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       handleRemoveUser(user.id)

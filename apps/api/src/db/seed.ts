@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt'
+import { eq } from 'drizzle-orm'
 import { db } from './db'
 import { roles, userRoles, users } from './schema'
 
@@ -69,20 +70,39 @@ async function seed() {
     ])
     .run()
 
-  const seededUsers = db.query.users.findMany({
-    with: {
-      userRoles: {
-        with: {
-          role: true,
-        },
-      },
-    },
-  })
+  const seededUsers = db
+    .select({
+      userId: users.id,
+      email: users.email,
+      fullName: users.fullName,
+      roleName: roles.name,
+    })
+    .from(users)
+    .leftJoin(userRoles, eq(userRoles.userId, users.id))
+    .leftJoin(roles, eq(userRoles.roleId, roles.id))
+    .all()
+
+  const usersById = seededUsers.reduce<
+    Record<number, { email: string; fullName: string; roles: string[] }>
+  >((acc, row) => {
+    const existing = acc[row.userId] ?? {
+      email: row.email,
+      fullName: row.fullName,
+      roles: [],
+    }
+
+    if (row.roleName) {
+      existing.roles.push(row.roleName)
+    }
+
+    acc[row.userId] = existing
+    return acc
+  }, {})
 
   console.log('✅ Seeded users:')
-  for (const user of seededUsers) {
-    const roleNames = user.userRoles.map((userRole) => userRole.role.name)
-    console.log(` - ${user.email} [${roleNames.join(', ')}]`)
+  for (const user of Object.values(usersById)) {
+    const roleNames = user.roles.join(', ')
+    console.log(` - ${user.email} [${roleNames || 'no roles'}]`)
   }
 }
 

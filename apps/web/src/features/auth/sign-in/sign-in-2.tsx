@@ -6,7 +6,7 @@ import { UserAuthForm } from './components/user-auth-form'
 
 export function SignIn2() {
   return (
-    <div className='relative container grid h-svh flex-col items-center justify-center lg:max-w-none lg:grid-cols-2 lg:px-0'>
+    <div className='container relative grid h-svh flex-col items-center justify-center lg:max-w-none lg:grid-cols-2 lg:px-0'>
       <div className='lg:p-8'>
         <div className='mx-auto flex w-full flex-col justify-center space-y-2 py-8 sm:w-[480px] sm:p-8'>
           <div className='mb-4 flex items-center justify-center'>
@@ -46,7 +46,7 @@ export function SignIn2() {
       <div
         className={cn(
           'bg-muted relative h-full overflow-hidden max-lg:hidden',
-          '[&>img]:absolute [&>img]:top-[15%] [&>img]:left-20 [&>img]:h-full [&>img]:w-full [&>img]:object-cover [&>img]:object-top-left [&>img]:select-none'
+          '[&>img]:object-top-left [&>img]:absolute [&>img]:left-20 [&>img]:top-[15%] [&>img]:h-full [&>img]:w-full [&>img]:select-none [&>img]:object-cover'
         )}
       >
         <img

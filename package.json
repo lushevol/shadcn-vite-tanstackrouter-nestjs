@@ -2,7 +2,7 @@
   "name": "shadcn-vite-tanstackrouter-nestjs",
   "private": true,
   "version": "0.0.0",
-  "packageManager": "pnpm@9.12.3",
+  "packageManager": "pnpm@10.18.2",
   "scripts": {
     "dev": "turbo run dev --parallel",
     "build": "turbo run build",
