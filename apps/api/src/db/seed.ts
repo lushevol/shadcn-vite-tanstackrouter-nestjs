@@ -1,11 +1,12 @@
 import bcrypt from 'bcrypt'
 import { eq } from 'drizzle-orm'
 import { db } from './db'
-import { roles, userRoles, users } from './schema'
+import { refreshTokens, roles, userRoles, users } from './schema'
 
 async function seed() {
   console.log('🪴 Seeding mock authentication database...')
 
+  db.delete(refreshTokens).run()
   db.delete(userRoles).run()
   db.delete(users).run()
   db.delete(roles).run()

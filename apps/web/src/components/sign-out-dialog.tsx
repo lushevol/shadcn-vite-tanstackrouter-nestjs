@@ -1,6 +1,9 @@
+import { useMutation } from '@tanstack/react-query'
 import { useNavigate, useLocation } from '@tanstack/react-router'
+import { toast } from 'sonner'
 import { useAuthStore } from '@/stores/auth-store'
 import { ConfirmDialog } from '@/components/confirm-dialog'
+import { logout } from '@/features/auth/api/logout'
 
 interface SignOutDialogProps {
   open: boolean
@@ -12,15 +15,32 @@ export function SignOutDialog({ open, onOpenChange }: SignOutDialogProps) {
   const location = useLocation()
   const { auth } = useAuthStore()
 
+  const logoutMutation = useMutation({
+    mutationFn: async () => {
+      const refreshToken = auth.getRefreshToken()
+      if (!refreshToken) return
+      await logout(refreshToken)
+    },
+    onSuccess: () => {
+      toast.success('Signed out successfully')
+    },
+    onError: () => {
+      toast.error('We signed you out locally, but the server logout failed.')
+    },
+    onSettled: () => {
+      auth.reset()
+      const currentPath = location.href
+      navigate({
+        to: '/sign-in',
+        search: { redirect: currentPath },
+        replace: true,
+      })
+      onOpenChange(false)
+    },
+  })
+
   const handleSignOut = () => {
-    auth.reset()
-    // Preserve current location for redirect after sign-in
-    const currentPath = location.href
-    navigate({
-      to: '/sign-in',
-      search: { redirect: currentPath },
-      replace: true,
-    })
+    logoutMutation.mutate()
   }
 
   return (
@@ -31,6 +51,7 @@ export function SignOutDialog({ open, onOpenChange }: SignOutDialogProps) {
       desc='Are you sure you want to sign out? You will need to sign in again to access your account.'
       confirmText='Sign out'
       handleConfirm={handleSignOut}
+      isLoading={logoutMutation.isPending}
       className='sm:max-w-sm'
     />
   )

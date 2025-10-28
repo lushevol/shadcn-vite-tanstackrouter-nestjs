@@ -1,7 +1,8 @@
 import { create } from 'zustand'
 import { getCookie, removeCookie, setCookie } from '@/lib/cookies'
 
-const ACCESS_TOKEN = 'thisisjustarandomstring'
+const ACCESS_TOKEN_COOKIE = 'thisisjustarandomstring'
+const REFRESH_TOKEN_COOKIE = 'thisisjustarandomrefreshtoken'
 
 type Role = string
 
@@ -18,9 +19,17 @@ interface AuthState {
     user: AuthUser | null
     accessToken: string | null
     expiresAt: number | null
-    setSession: (session: { accessToken: string; user: AuthUser }) => void
+    refreshToken: string | null
+    refreshExpiresAt: number | null
+    setSession: (session: {
+      accessToken: string
+      refreshToken: string
+      refreshExpiresIn: number
+      user: AuthUser
+    }) => void
     isAuthenticated: () => boolean
     hasRole: (required: Role | Role[]) => boolean
+    getRefreshToken: () => string | null
     reset: () => void
   }
 }
@@ -40,23 +49,35 @@ function decodeToken(token: string): DecodedToken | null {
   }
 }
 
-function parseCookieToken(): string | null {
-  const cookieState = getCookie(ACCESS_TOKEN)
-  if (!cookieState) return null
+function parseCookieToken(cookieName: string): {
+  token: string | null
+  storedExpiresAt: number | null
+} {
+  const cookieState = getCookie(cookieName)
+  if (!cookieState) return { token: null, storedExpiresAt: null }
 
   try {
     const parsed = JSON.parse(cookieState)
-    if (typeof parsed === 'string') return parsed
+    if (typeof parsed === 'string') {
+      return { token: parsed, storedExpiresAt: null }
+    }
     if (parsed && typeof parsed === 'object' && 'token' in parsed) {
       const tokenValue = (parsed as { token?: unknown }).token
-      return typeof tokenValue === 'string' ? tokenValue : null
+      const expiresAt =
+        parsed && typeof parsed === 'object' && 'expiresAt' in parsed
+          ? Number((parsed as { expiresAt?: unknown }).expiresAt)
+          : null
+      return {
+        token: typeof tokenValue === 'string' ? tokenValue : null,
+        storedExpiresAt: Number.isFinite(expiresAt) ? (expiresAt as number) : null,
+      }
     }
   } catch (_error) {
     // Ignore JSON parse errors – assume the raw cookie is the token string
-    return cookieState
+    return { token: cookieState, storedExpiresAt: null }
   }
 
-  return cookieState
+  return { token: cookieState, storedExpiresAt: null }
 }
 
 function buildUserFromToken(token: string | null): {
@@ -86,18 +107,37 @@ function buildUserFromToken(token: string | null): {
   }
 }
 
-const initialToken = parseCookieToken()
-const initialSession = buildUserFromToken(initialToken)
+const initialAccess = parseCookieToken(ACCESS_TOKEN_COOKIE)
+const initialSession = buildUserFromToken(initialAccess.token)
+const initialRefresh = parseCookieToken(REFRESH_TOKEN_COOKIE)
 
 export const useAuthStore = create<AuthState>()((set, get) => ({
   auth: {
     user: initialSession.user,
-    accessToken: initialToken,
+    accessToken: initialAccess.token,
     expiresAt: initialSession.expiresAt,
-    setSession: ({ accessToken, user }) => {
+    refreshToken: initialRefresh.token,
+    refreshExpiresAt: initialRefresh.storedExpiresAt,
+    setSession: ({ accessToken, refreshToken, refreshExpiresIn, user }) => {
       const decoded = decodeToken(accessToken)
       const expiresAt = decoded?.exp ? decoded.exp * 1000 : null
-      setCookie(ACCESS_TOKEN, accessToken)
+      const refreshExpiresAt = Date.now() + refreshExpiresIn * 1000
+
+      const accessCookiePayload = expiresAt
+        ? JSON.stringify({ token: accessToken, expiresAt })
+        : accessToken
+
+      const refreshCookiePayload = JSON.stringify({
+        token: refreshToken,
+        expiresAt: refreshExpiresAt,
+      })
+
+      const accessMaxAge = expiresAt
+        ? Math.max(0, Math.floor((expiresAt - Date.now()) / 1000))
+        : undefined
+
+      setCookie(ACCESS_TOKEN_COOKIE, accessCookiePayload, accessMaxAge)
+      setCookie(REFRESH_TOKEN_COOKIE, refreshCookiePayload, refreshExpiresIn)
 
       set((state) => ({
         auth: {
@@ -105,6 +145,8 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
           user,
           accessToken,
           expiresAt,
+          refreshToken,
+          refreshExpiresAt,
         },
       }))
     },
@@ -128,14 +170,21 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
 
       return roles.some((role) => state.user?.roles.includes(role))
     },
+    getRefreshToken: () => {
+      const state = get().auth
+      return state.refreshToken
+    },
     reset: () => {
-      removeCookie(ACCESS_TOKEN)
+      removeCookie(ACCESS_TOKEN_COOKIE)
+      removeCookie(REFRESH_TOKEN_COOKIE)
       set((state) => ({
         auth: {
           ...state.auth,
           user: null,
           accessToken: null,
           expiresAt: null,
+          refreshToken: null,
+          refreshExpiresAt: null,
         },
       }))
     },

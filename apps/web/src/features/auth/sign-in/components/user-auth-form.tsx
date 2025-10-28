@@ -54,7 +54,12 @@ export function UserAuthForm({
   const loginMutation = useMutation({
     mutationFn: login,
     onSuccess: (data) => {
-      auth.setSession({ accessToken: data.accessToken, user: data.user })
+      auth.setSession({
+        accessToken: data.accessToken,
+        refreshToken: data.refreshToken,
+        refreshExpiresIn: data.refreshExpiresIn,
+        user: data.user,
+      })
       toast.success(`Welcome back, ${data.user.fullName}!`)
 
       if (redirectTo && typeof window !== 'undefined') {
