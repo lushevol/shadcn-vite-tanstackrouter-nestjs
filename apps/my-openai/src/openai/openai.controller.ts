@@ -1,0 +1,36 @@
+import { Controller, Post, Body, Res, UseFilters } from '@nestjs/common';
+import { Response } from 'express';
+import { CreateChatCompletionDto } from './dto/chat-completion.dto';
+import { OpenAIService } from './openai.service';
+import { OpenAIExceptionFilter } from '../common/filters/openai-exception.filter';
+import { Observable } from 'rxjs';
+
+@Controller('v1/chat')
+@UseFilters(OpenAIExceptionFilter)
+export class OpenAIController {
+  constructor(private readonly openAiService: OpenAIService) {}
+
+  @Post('completions')
+  async chatCompletions(@Body() body: CreateChatCompletionDto, @Res() res: Response) {
+    const result = await this.openAiService.handleRequest(body);
+
+    if (result instanceof Observable) {
+      // STREAMING RESPONSE (SSE)
+      res.setHeader('Content-Type', 'text/event-stream');
+      res.setHeader('Cache-Control', 'no-cache');
+      res.setHeader('Connection', 'keep-alive');
+
+      result.subscribe({
+        next: (data) => {
+          if (data === '[DONE]') res.write('data: [DONE]\n\n');
+          else res.write(`data: ${JSON.stringify(data)}\n\n`);
+        },
+        error: (err) => { console.error(err); res.end(); },
+        complete: () => res.end(),
+      });
+    } else {
+      // STANDARD JSON RESPONSE
+      res.json(result);
+    }
+  }
+}

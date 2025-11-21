@@ -3,7 +3,13 @@ packages:
   - packages/*
 
 onlyBuiltDependencies:
+  - '@clerk/shared'
   - '@nestjs/core'
   - '@scarf/scarf'
   - '@swc/core'
+  - '@tailwindcss/oxide'
+  - bcrypt
+  - better-sqlite3
   - core-js
+  - esbuild
+  - protobufjs

@@ -32,3 +32,6 @@ dist-ssr
 *.sln
 *.sw?
 mock.sqlite
+apps/mastra.db
+apps/mastra.db-shm
+apps/mastra.db-wal
