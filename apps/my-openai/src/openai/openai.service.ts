@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import type { Observable } from "rxjs";
 import { endWith, map } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
-import type { MyBotService } from "../bot/my-bot.service";
+import { MyBotService } from "../bot/my-bot.service";
 import { simulateStream } from "../common/utils/stream-simulator.util";
 import { TextUtils } from "../common/utils/text-processing.util";
 import type { CreateChatCompletionDto } from "./dto/chat-completion.dto";

@@ -24,7 +24,7 @@ describe("OpenAI Integration", () => {
 
 	it("should get a streaming response from the mock api", async () => {
 		const openai = createOpenAI({
-			baseURL: `http://127.0.0.1:${server.address().port}/v1/chat/completions`,
+			baseURL: `http://127.0.0.1:${server.address().port}/v1`,
 			apiKey: "test",
 		});
 

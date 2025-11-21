@@ -3,7 +3,7 @@ import type { Response } from 'express';
 import { Observable } from 'rxjs';
 import { OpenAIExceptionFilter } from '../common/filters/openai-exception.filter';
 import type { CreateChatCompletionDto } from './dto/chat-completion.dto';
-import type { OpenAIService } from './openai.service';
+import { OpenAIService } from './openai.service';
 
 @Controller('v1/chat')
 @UseFilters(OpenAIExceptionFilter)

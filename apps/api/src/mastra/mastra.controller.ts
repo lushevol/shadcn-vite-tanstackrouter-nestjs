@@ -3,7 +3,7 @@ import { Body, Controller, Post, Res } from '@nestjs/common';
 import type { Request, Response } from 'express';
 import OpenAI from 'openai';
 import { Public } from '../auth/decorators/public.decorator';
-import type { MastraService } from './mastra.service';
+import { MastraService } from './mastra.service';
 import 'dotenv/config';
 
 const openai = new OpenAI({ baseURL: process.env.DEEPSEEK_API_BASE_URL!, apiKey: process.env.DEEPSEEK_API_KEY! });

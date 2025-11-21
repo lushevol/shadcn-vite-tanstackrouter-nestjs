@@ -1,6 +1,6 @@
 import { Controller, Get, Req } from '@nestjs/common'
 import type { Request } from 'express'
-import type { AppService } from './app.service'
+import { AppService } from './app.service'
 import { Public } from './auth/decorators/public.decorator'
 import { Roles } from './auth/decorators/roles.decorator'
 import type { JwtPayload } from './auth/interfaces/jwt-payload'
