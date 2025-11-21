@@ -1,9 +1,9 @@
-import { Module } from '@nestjs/common';
-import { MastraService } from './mastra.service';
-import { MastraController } from './mastra.controller';
+import { Module } from "@nestjs/common";
+import { MastraController } from "./mastra.controller";
+import { MastraService } from "./mastra.service";
 
 @Module({
-  controllers: [MastraController],
-  providers: [MastraService],
+	controllers: [MastraController],
+	providers: [MastraService],
 })
 export class MastraModule {}

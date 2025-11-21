@@ -1,9 +1,9 @@
-import { Controller, Post, Body, Res, UseFilters } from '@nestjs/common';
-import { Response } from 'express';
-import { CreateChatCompletionDto } from './dto/chat-completion.dto';
-import { OpenAIService } from './openai.service';
-import { OpenAIExceptionFilter } from '../common/filters/openai-exception.filter';
+import { Body, Controller, Post, Res, UseFilters } from '@nestjs/common';
+import type { Response } from 'express';
 import { Observable } from 'rxjs';
+import { OpenAIExceptionFilter } from '../common/filters/openai-exception.filter';
+import type { CreateChatCompletionDto } from './dto/chat-completion.dto';
+import type { OpenAIService } from './openai.service';
 
 @Controller('v1/chat')
 @UseFilters(OpenAIExceptionFilter)

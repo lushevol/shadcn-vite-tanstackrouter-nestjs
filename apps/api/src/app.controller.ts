@@ -1,9 +1,9 @@
 import { Controller, Get, Req } from '@nestjs/common'
-import { Request } from 'express'
-import { AppService } from './app.service'
+import type { Request } from 'express'
+import type { AppService } from './app.service'
 import { Public } from './auth/decorators/public.decorator'
 import { Roles } from './auth/decorators/roles.decorator'
-import { JwtPayload } from './auth/interfaces/jwt-payload'
+import type { JwtPayload } from './auth/interfaces/jwt-payload'
 
 @Controller()
 export class AppController {

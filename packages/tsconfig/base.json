@@ -1,13 +1,13 @@
 {
-  "compilerOptions": {
-    "target": "ES2020",
-    "module": "ESNext",
-    "strict": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true
-  }
+	"compilerOptions": {
+		"target": "ES2020",
+		"module": "ESNext",
+		"strict": true,
+		"skipLibCheck": true,
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
+		"forceConsistentCasingInFileNames": true,
+		"resolveJsonModule": true,
+		"isolatedModules": true
+	}
 }

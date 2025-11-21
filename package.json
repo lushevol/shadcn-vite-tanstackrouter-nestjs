@@ -1,17 +1,19 @@
 {
-  "name": "shadcn-vite-tanstackrouter-nestjs",
-  "private": true,
-  "version": "0.0.0",
-  "packageManager": "pnpm@10.18.2",
-  "scripts": {
-    "dev": "turbo run dev --parallel",
-    "build": "turbo run build",
-    "lint": "turbo run lint",
-    "format": "turbo run format",
-    "format:check": "turbo run format:check",
-    "test": "turbo run test"
-  },
-  "devDependencies": {
-    "turbo": "^2.3.3"
-  }
+	"name": "shadcn-vite-tanstackrouter-nestjs",
+	"private": true,
+	"version": "0.0.0",
+	"packageManager": "pnpm@10.18.2",
+	"scripts": {
+		"dev": "turbo run dev --parallel",
+		"build": "turbo run build",
+		"lint": "turbo run lint",
+		"check": "biome check --write",
+		"format": "turbo run format",
+		"format:check": "turbo run format:check",
+		"test": "turbo run test"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.3.7",
+		"turbo": "^2.3.3"
+	}
 }

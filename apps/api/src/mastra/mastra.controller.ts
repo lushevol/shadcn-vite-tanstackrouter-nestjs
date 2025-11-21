@@ -1,9 +1,9 @@
+import { CopilotRuntime, copilotRuntimeNestEndpoint, OpenAIAdapter } from '@copilotkit/runtime';
 import { Body, Controller, Post, Res } from '@nestjs/common';
-import { MastraService } from './mastra.service';
-import type { Response, Request } from 'express';
-import { Public } from '../auth/decorators/public.decorator';
-import { OpenAIAdapter, CopilotRuntime, copilotRuntimeNestEndpoint } from '@copilotkit/runtime';
+import type { Request, Response } from 'express';
 import OpenAI from 'openai';
+import { Public } from '../auth/decorators/public.decorator';
+import type { MastraService } from './mastra.service';
 import 'dotenv/config';
 
 const openai = new OpenAI({ baseURL: process.env.DEEPSEEK_API_BASE_URL!, apiKey: process.env.DEEPSEEK_API_KEY! });

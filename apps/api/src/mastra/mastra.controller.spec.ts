@@ -1,20 +1,20 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { MastraController } from './mastra.controller';
-import { MastraService } from './mastra.service';
+import { Test, type TestingModule } from "@nestjs/testing";
+import { MastraController } from "./mastra.controller";
+import { MastraService } from "./mastra.service";
 
-describe('MastraController', () => {
-  let controller: MastraController;
+describe("MastraController", () => {
+	let controller: MastraController;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [MastraController],
-      providers: [MastraService],
-    }).compile();
+	beforeEach(async () => {
+		const module: TestingModule = await Test.createTestingModule({
+			controllers: [MastraController],
+			providers: [MastraService],
+		}).compile();
 
-    controller = module.get<MastraController>(MastraController);
-  });
+		controller = module.get<MastraController>(MastraController);
+	});
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
-  });
+	it("should be defined", () => {
+		expect(controller).toBeDefined();
+	});
 });
