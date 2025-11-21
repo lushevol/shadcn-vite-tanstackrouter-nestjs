@@ -1,42 +1,31 @@
 import { Body, Controller, Post, Res } from '@nestjs/common';
 import { MastraService } from './mastra.service';
+import type { Response } from 'express';
 
 @Controller('api/copilotkit')
 export class MastraController {
-  constructor(private readonly mastraService: MastraService) {
+  constructor(private readonly mastraService: MastraService) {}
 
-  }
-  
   @Post()
   async chat(@Body() body: any, @Res() res: Response) {
-    
-    // 1. Initialize Copilot Runtime
-    const runtime = new CopilotRuntime();
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.flushHeaders(); // Flush headers to establish SSE connection immediately
 
-    // 2. Handle the request
-    // We adapt the Mastra agent to work with CopilotKit's expected stream.
-    // Since Mastra is the "Brain", we can treat it like a custom model handler
-    // or simply use CopilotKit's own service adapter if we want to bypass Mastra for simple chat.
-    
-    // However, to use MASTRA as the core:
-    // We extract the latest message, send it to Mastra, and stream the result back.
-    
     const userMessage = body.messages[body.messages.length - 1].content;
-    
+
     try {
-      // Call Mastra Agent
-      const mastraResponse = await this.mastraService.generate(userMessage);
-      
-      // Stream the text back to the frontend compatible with CopilotKit
-      // (Simplified streaming response for demonstration)
-      res.setHeader('Content-Type', 'application/json');
-      res.json({
-        result: mastraResponse.text // Or mastraResponse.content
-      });
-      
+      const mastraResponse = await this.mastraService.chat(userMessage);
+
+      // In a real streaming scenario, mastraService.chat would return an Observable or a ReadableStream
+      // and you would pipe it to res.write(). For now, we send the full response as one chunk.
+      res.write(`data: ${JSON.stringify({ content: mastraResponse.text })}\n\n`);
+      res.end();
     } catch (error) {
-      console.error("Agent Error:", error);
-      res.status(500).json({ error: 'Failed to process request' });
+      console.error('Agent Error:', error);
+      res.status(500).write(`data: ${JSON.stringify({ error: 'Failed to process request' })}\n\n`);
+      res.end();
     }
   }
 }

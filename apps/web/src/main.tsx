@@ -63,7 +63,7 @@ const queryClient = new QueryClient({
         }
         if (error.response?.status === 403) {
           toast.error('You do not have permission to view that page.')
-          router.navigate({ to: '/(errors)/403', replace: true })
+          router.navigate({ to: '/403', replace: true })
         }
       }
     },

@@ -31,7 +31,7 @@ export const Route = createFileRoute('/_authenticated/users/')({
   beforeLoad: () => {
     const { auth } = useAuthStore.getState()
     if (!auth.hasRole('admin')) {
-      throw redirect({ to: '/(errors)/403', replace: true })
+      throw redirect({ to: '/403', replace: true })
     }
   },
   validateSearch: usersSearchSchema,

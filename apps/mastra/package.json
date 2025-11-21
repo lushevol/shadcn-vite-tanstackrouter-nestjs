@@ -2,11 +2,22 @@
   "name": "mastra-app",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "mastra dev",
-    "build": "mastra build",
+    "build": "rslib build",
     "start": "mastra start"
   },
   "keywords": [],
@@ -18,6 +29,7 @@
     "node": ">=22.13.0"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^2.0.71",
     "@mastra/core": "^0.24.4",
     "@mastra/evals": "^0.14.4",
     "@mastra/libsql": "^0.16.2",
@@ -26,8 +38,10 @@
     "zod": "^4.0.17"
   },
   "devDependencies": {
+    "@rslib/core": "^0.18.0",
     "@types/node": "^24.10.1",
     "mastra": "^0.18.4",
-    "typescript": "~5.9.2"
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.9"
   }
 }
