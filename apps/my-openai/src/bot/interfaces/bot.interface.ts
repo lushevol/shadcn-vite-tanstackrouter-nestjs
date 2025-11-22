@@ -1,5 +1,5 @@
 export interface BotRequest {
-	messages: any[];
+	messages: Array<{ role: string; content: string }>;
 	tools?: any[];
 	userId?: string;
 	isJsonMode?: boolean;

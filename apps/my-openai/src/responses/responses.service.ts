@@ -1,6 +1,9 @@
 import { Injectable, Logger } from "@nestjs/common";
-import { ChatCompletionCreateParams } from "openai/resources";
-import type { Observable } from "rxjs";
+import {
+	EasyInputMessage,
+	ResponseCreateParams,
+} from "openai/resources/responses/responses";
+import { Observable } from "rxjs";
 import { endWith, finalize, map, tap } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 import { MyBotService } from "../bot/my-bot.service";
@@ -8,12 +11,12 @@ import { simulateStream } from "../common/utils/stream-simulator.util";
 import { TextUtils } from "../common/utils/text-processing.util";
 
 @Injectable()
-export class OpenAIService {
-	private readonly logger = new Logger(OpenAIService.name);
+export class ResponsesService {
+	private readonly logger = new Logger(ResponsesService.name);
 
 	constructor(private botService: MyBotService) {}
 
-	async handleRequest(dto: ChatCompletionCreateParams) {
+	async handleRequest(dto: ResponseCreateParams) {
 		const reqId = `chatcmpl-${uuidv4()}`;
 		const created = Math.floor(Date.now() / 1000);
 
@@ -22,22 +25,40 @@ export class OpenAIService {
 			const preview = JSON.stringify({
 				model: dto.model,
 				user: dto.user,
-				messages: dto.messages?.slice?.(0, 2) ?? [],
-			})
-				.slice(0, 500)
-				.replace(/\\n/g, "\\n");
+				input: Array.isArray(dto.input)
+					? (dto.input as any).slice(0, 2)
+					: dto.input,
+			}).slice(0, 500);
 			this.logger.log(`handleRequest start. reqId=${reqId} preview=${preview}`);
 		} catch {
 			this.logger.debug(`handleRequest start. reqId=${reqId} (preview failed)`);
 		}
 
 		// 1. Call Internal Bot
+		const messages = (
+			Array.isArray(dto.input)
+				? dto.input.map((i: EasyInputMessage) => {
+						if (typeof i.content === "string") {
+							return i as { role: string; content: string };
+						} else if (
+							Array.isArray(i.content) &&
+							i.content.every((c) => c.type === "input_text")
+						) {
+							const textContent = i.content.map((c) => c.text)?.join("") || "";
+							return { role: i.role, content: textContent };
+						} else {
+							return { role: i.role, content: i.content };
+						}
+					})
+				: [{ role: "user", content: dto.input }]
+		) as Array<{ role: string; content: string }>;
+
 		this.logger.log(`Calling internal bot for reqId=${reqId}`);
 		const botResponse = await this.botService.process({
-			messages: dto.messages as Array<{ role: string; content: string }>,
+			messages: messages,
 			tools: dto.tools,
 			userId: dto.user,
-			isJsonMode: dto.response_format?.type === "json_object",
+			isJsonMode: dto.text?.format.type === "json_object",
 		});
 		this.logger.log(`Bot response received for reqId=${reqId}`);
 
@@ -66,26 +87,24 @@ export class OpenAIService {
 			};
 		}
 
-		// 3. Process Text (Stop Sequences)
-		const cleanContent = TextUtils.applyStopSequences(
-			botResponse.content || "",
-			dto.stop,
-		);
-		try {
-			const contentPreview = cleanContent.slice(0, 500);
-			this.logger.debug(
-				`Clean content preview for reqId=${reqId}: ${contentPreview}`,
-			);
-		} catch {
-			this.logger.debug(
-				`Clean content processed for reqId=${reqId} (preview unavailable)`,
-			);
-		}
+		// // 3. Process Text (Stop Sequences)
+		// // Respect stop tokens provided by the client (string or string[]).
+		// const stopParam = (dto as any).stop ?? dto.text?.stop ?? undefined;
+		// let stopSequences: string | string[] = "";
+		// if (typeof stopParam === "string") {
+		// 	stopSequences = stopParam;
+		// } else if (Array.isArray(stopParam) && stopParam.length > 0) {
+		// 	stopSequences = stopParam;
+		// }
+		// const cleanContent = TextUtils.applyStopSequences(
+		// 	botResponse.content || "",
+		// 	stopSequences,
+		// );
 
 		// 4. Calculate Usage
 		const usage = {
-			prompt_tokens: TextUtils.estimateTokens(JSON.stringify(dto.messages)),
-			completion_tokens: TextUtils.estimateTokens(cleanContent),
+			prompt_tokens: TextUtils.estimateTokens(JSON.stringify(messages)),
+			completion_tokens: TextUtils.estimateTokens(botResponse.content || ""),
 			total_tokens: 0, // Sum not needed for this mock
 		};
 		usage.total_tokens = usage.prompt_tokens + usage.completion_tokens;
@@ -96,7 +115,12 @@ export class OpenAIService {
 		// 5. Return Stream or Static
 		if (dto.stream) {
 			this.logger.log(`Creating streaming response for reqId=${reqId}`);
-			return this.createStream(cleanContent, dto.model, reqId, created);
+			return this.createStream(
+				botResponse.content || "",
+				dto.model,
+				reqId,
+				created,
+			);
 		} else {
 			this.logger.log(`Returning static JSON response for reqId=${reqId}`);
 			return {
@@ -107,7 +131,7 @@ export class OpenAIService {
 				choices: [
 					{
 						index: 0,
-						message: { role: "assistant", content: cleanContent },
+						message: { role: "assistant", content: botResponse.content || "" },
 						finish_reason: "stop",
 					},
 				],

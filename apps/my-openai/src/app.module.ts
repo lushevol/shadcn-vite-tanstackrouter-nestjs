@@ -1,10 +1,8 @@
 import { Module } from "@nestjs/common";
-import { MyBotService } from "./bot/my-bot.service";
-import { OpenAIController } from "./openai/openai.controller";
-import { OpenAIService } from "./openai/openai.service";
+import { OpenAIModule } from "./openai/openai.module";
+import { ResponsesModule } from "./responses/responses.module";
 
 @Module({
-	controllers: [OpenAIController],
-	providers: [OpenAIService, MyBotService],
+	imports: [OpenAIModule, ResponsesModule],
 })
 export class AppModule {}

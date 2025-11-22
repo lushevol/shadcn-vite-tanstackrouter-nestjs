@@ -1,6 +1,6 @@
 import { Observable, type Subscriber } from "rxjs";
 
-export function simulateStream(text: string, delayMs = 15): Observable<string> {
+export function simulateStream(text: string, delayMs = 10): Observable<string> {
 	return new Observable((subscriber: Subscriber<string>) => {
 		// Stream 2-6 characters at a time to mimic human/LLM typing
 		const chunks = text.match(/[\s\S]{1,4}/g) || [];

@@ -28,7 +28,7 @@ describe("OpenAI Integration", () => {
 			apiKey: "test",
 		});
 
-		const { textStream } = await streamText({
+		const { textStream } = streamText({
 			model: openai("gpt-4"),
 			prompt: "hello",
 		});

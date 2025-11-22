@@ -20,7 +20,7 @@ describe("MyBotService", () => {
 	describe("process", () => {
 		it("should return tool_calls when weather is mentioned and tool is available", async () => {
 			const request: BotRequest = {
-				messages: [{ content: "what is the weather in London?" }],
+				messages: [{ role: "user", content: "what is the weather in London?" }],
 				tools: [{ function: { name: "get_weather" } }],
 			};
 			const response = await service.process(request);
@@ -30,7 +30,7 @@ describe("MyBotService", () => {
 
 		it("should return a JSON string when in json mode", async () => {
 			const request: BotRequest = {
-				messages: [{ content: "give me a json" }],
+				messages: [{ role: "user", content: "give me a json" }],
 				isJsonMode: true,
 			};
 			const response = await service.process(request);
@@ -40,7 +40,7 @@ describe("MyBotService", () => {
 
 		it("should return a standard text response", async () => {
 			const request: BotRequest = {
-				messages: [{ content: "hello" }],
+				messages: [{ role: "user", content: "hello" }],
 			};
 			const response = await service.process(request);
 			expect(response.content).toEqual(
