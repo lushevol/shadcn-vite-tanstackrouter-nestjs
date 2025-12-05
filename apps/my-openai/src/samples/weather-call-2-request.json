@@ -1,0 +1,88 @@
+{
+    "tools": {
+        "weather_search": {
+            "description": "Find the weather in a location given a longitude and latitude",
+            "parameters": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string"
+                    },
+                    "longitude": {
+                        "type": "number"
+                    },
+                    "latitude": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "query",
+                    "longitude",
+                    "latitude"
+                ],
+                "additionalProperties": false
+            }
+        },
+        "geocode_location": {
+            "description": "Geocode a location using Open-Meteo's geocoding API",
+            "parameters": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "query"
+                ],
+                "additionalProperties": false
+            }
+        }
+    },
+    "id": "DEFAULT_THREAD_ID",
+    "messages": [
+        {
+            "role": "user",
+            "parts": [
+                {
+                    "type": "text",
+                    "text": "What's the weather in San Francisco?"
+                }
+            ],
+            "id": "iwwpepmrPex9kGdN"
+        },
+        {
+            "id": "GtE5GIyMYVbtbIJN",
+            "role": "assistant",
+            "parts": [
+                {
+                    "type": "step-start"
+                },
+                {
+                    "type": "tool-weather_search",
+                    "toolCallId": "call_rE9tRGc6uK6PKikTT5XGRpLn",
+                    "state": "output-available",
+                    "input": {
+                        "query": "San Francisco",
+                        "longitude": -122.4194,
+                        "latitude": 37.7749
+                    },
+                    "output": {
+                        "success": true,
+                        "temperature": 9.6,
+                        "timestamp": "2025-12-02T05:00"
+                    },
+                    "callProviderMetadata": {
+                        "openai": {
+                            "itemId": "fc_0ddaa6fca914a11600692e8c456bc0819cb66b5ab8fe23d667"
+                        }
+                    }
+                }
+            ]
+        }
+    ],
+    "trigger": "submit-message",
+    "messageId": "GtE5GIyMYVbtbIJN"
+}

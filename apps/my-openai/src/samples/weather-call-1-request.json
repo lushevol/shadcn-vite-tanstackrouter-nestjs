@@ -1,0 +1,59 @@
+{
+    "tools": {
+        "weather_search": {
+            "description": "Find the weather in a location given a longitude and latitude",
+            "parameters": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string"
+                    },
+                    "longitude": {
+                        "type": "number"
+                    },
+                    "latitude": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "query",
+                    "longitude",
+                    "latitude"
+                ],
+                "additionalProperties": false
+            }
+        },
+        "geocode_location": {
+            "description": "Geocode a location using Open-Meteo's geocoding API",
+            "parameters": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "query"
+                ],
+                "additionalProperties": false
+            }
+        }
+    },
+    "id": "DEFAULT_THREAD_ID",
+    "messages": [
+        {
+            "role": "user",
+            "parts": [
+                {
+                    "type": "text",
+                    "text": "What's the weather in San Francisco?"
+                }
+            ],
+            "id": "iwwpepmrPex9kGdN"
+        }
+    ],
+    "trigger": "submit-message",
+    "metadata": {}
+}

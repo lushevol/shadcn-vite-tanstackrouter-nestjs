@@ -15,7 +15,7 @@ async function bootstrap() {
 	);
 
 	app.enableCors(); // Allow frontend access
-	await app.listen(3000);
-	console.log("OpenAI Wrapper running on http://localhost:3000");
+	await app.listen(3001);
+	console.log("OpenAI Wrapper running on http://localhost:3001");
 }
 bootstrap();

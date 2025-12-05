@@ -1,0 +1,70 @@
+data: {"type":"start"}
+
+data: {"type":"start-step"}
+
+data: {"type":"text-start","id":"msg_0ddaa6fca914a11600692e8c49c0b0819ca688bf07ca2f54df","providerMetadata":{"openai":{"itemId":"msg_0ddaa6fca914a11600692e8c49c0b0819ca688bf07ca2f54df"}}}
+
+data: {"type":"text-delta","id":"msg_0ddaa6fca914a11600692e8c49c0b0819ca688bf07ca2f54df","delta":"The"}
+
+data: {"type":"text-delta","id":"msg_0ddaa6fca914a11600692e8c49c0b0819ca688bf07ca2f54df","delta":" current"}
+
+data: {"type":"text-delta","id":"msg_0ddaa6fca914a11600692e8c49c0b0819ca688bf07ca2f54df","delta":" temperature"}
+
+data: {"type":"text-delta","id":"msg_0ddaa6fca914a11600692e8c49c0b0819ca688bf07ca2f54df","delta":" in"}
+
+data: {"type":"text-delta","id":"msg_0ddaa6fca914a11600692e8c49c0b0819ca688bf07ca2f54df","delta":" San"}
+
+data: {"type":"text-delta","id":"msg_0ddaa6fca914a11600692e8c49c0b0819ca688bf07ca2f54df","delta":" Francisco"}
+
+data: {"type":"text-delta","id":"msg_0ddaa6fca914a11600692e8c49c0b0819ca688bf07ca2f54df","delta":" is"}
+
+data: {"type":"text-delta","id":"msg_0ddaa6fca914a11600692e8c49c0b0819ca688bf07ca2f54df","delta":" "}
+
+data: {"type":"text-delta","id":"msg_0ddaa6fca914a11600692e8c49c0b0819ca688bf07ca2f54df","delta":"9"}
+
+data: {"type":"text-delta","id":"msg_0ddaa6fca914a11600692e8c49c0b0819ca688bf07ca2f54df","delta":"."}
+
+data: {"type":"text-delta","id":"msg_0ddaa6fca914a11600692e8c49c0b0819ca688bf07ca2f54df","delta":"6"}
+
+data: {"type":"text-delta","id":"msg_0ddaa6fca914a11600692e8c49c0b0819ca688bf07ca2f54df","delta":"°C"}
+
+data: {"type":"text-delta","id":"msg_0ddaa6fca914a11600692e8c49c0b0819ca688bf07ca2f54df","delta":"."}
+
+data: {"type":"text-delta","id":"msg_0ddaa6fca914a11600692e8c49c0b0819ca688bf07ca2f54df","delta":" If"}
+
+data: {"type":"text-delta","id":"msg_0ddaa6fca914a11600692e8c49c0b0819ca688bf07ca2f54df","delta":" you"}
+
+data: {"type":"text-delta","id":"msg_0ddaa6fca914a11600692e8c49c0b0819ca688bf07ca2f54df","delta":" need"}
+
+data: {"type":"text-delta","id":"msg_0ddaa6fca914a11600692e8c49c0b0819ca688bf07ca2f54df","delta":" more"}
+
+data: {"type":"text-delta","id":"msg_0ddaa6fca914a11600692e8c49c0b0819ca688bf07ca2f54df","delta":" detailed"}
+
+data: {"type":"text-delta","id":"msg_0ddaa6fca914a11600692e8c49c0b0819ca688bf07ca2f54df","delta":" weather"}
+
+data: {"type":"text-delta","id":"msg_0ddaa6fca914a11600692e8c49c0b0819ca688bf07ca2f54df","delta":" information"}
+
+data: {"type":"text-delta","id":"msg_0ddaa6fca914a11600692e8c49c0b0819ca688bf07ca2f54df","delta":" or"}
+
+data: {"type":"text-delta","id":"msg_0ddaa6fca914a11600692e8c49c0b0819ca688bf07ca2f54df","delta":" a"}
+
+data: {"type":"text-delta","id":"msg_0ddaa6fca914a11600692e8c49c0b0819ca688bf07ca2f54df","delta":" forecast"}
+
+data: {"type":"text-delta","id":"msg_0ddaa6fca914a11600692e8c49c0b0819ca688bf07ca2f54df","delta":","}
+
+data: {"type":"text-delta","id":"msg_0ddaa6fca914a11600692e8c49c0b0819ca688bf07ca2f54df","delta":" let"}
+
+data: {"type":"text-delta","id":"msg_0ddaa6fca914a11600692e8c49c0b0819ca688bf07ca2f54df","delta":" me"}
+
+data: {"type":"text-delta","id":"msg_0ddaa6fca914a11600692e8c49c0b0819ca688bf07ca2f54df","delta":" know"}
+
+data: {"type":"text-delta","id":"msg_0ddaa6fca914a11600692e8c49c0b0819ca688bf07ca2f54df","delta":"!"}
+
+data: {"type":"text-end","id":"msg_0ddaa6fca914a11600692e8c49c0b0819ca688bf07ca2f54df","providerMetadata":{"openai":{"itemId":"msg_0ddaa6fca914a11600692e8c49c0b0819ca688bf07ca2f54df"}}}
+
+data: {"type":"finish-step"}
+
+data: {"type":"finish","finishReason":"stop"}
+
+data: [DONE]
+

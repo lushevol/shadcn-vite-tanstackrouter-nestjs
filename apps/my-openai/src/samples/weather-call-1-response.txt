@@ -1,0 +1,56 @@
+data: {"type":"start"}
+
+data: {"type":"start-step"}
+
+data: {"type":"tool-input-start","toolCallId":"call_rE9tRGc6uK6PKikTT5XGRpLn","toolName":"weather_search"}
+
+data: {"type":"tool-input-delta","toolCallId":"call_rE9tRGc6uK6PKikTT5XGRpLn","inputTextDelta":"{\""}
+
+data: {"type":"tool-input-delta","toolCallId":"call_rE9tRGc6uK6PKikTT5XGRpLn","inputTextDelta":"query"}
+
+data: {"type":"tool-input-delta","toolCallId":"call_rE9tRGc6uK6PKikTT5XGRpLn","inputTextDelta":"\":\""}
+
+data: {"type":"tool-input-delta","toolCallId":"call_rE9tRGc6uK6PKikTT5XGRpLn","inputTextDelta":"San"}
+
+data: {"type":"tool-input-delta","toolCallId":"call_rE9tRGc6uK6PKikTT5XGRpLn","inputTextDelta":" Francisco"}
+
+data: {"type":"tool-input-delta","toolCallId":"call_rE9tRGc6uK6PKikTT5XGRpLn","inputTextDelta":"\",\""}
+
+data: {"type":"tool-input-delta","toolCallId":"call_rE9tRGc6uK6PKikTT5XGRpLn","inputTextDelta":"longitude"}
+
+data: {"type":"tool-input-delta","toolCallId":"call_rE9tRGc6uK6PKikTT5XGRpLn","inputTextDelta":"\":"}
+
+data: {"type":"tool-input-delta","toolCallId":"call_rE9tRGc6uK6PKikTT5XGRpLn","inputTextDelta":"-"}
+
+data: {"type":"tool-input-delta","toolCallId":"call_rE9tRGc6uK6PKikTT5XGRpLn","inputTextDelta":"122"}
+
+data: {"type":"tool-input-delta","toolCallId":"call_rE9tRGc6uK6PKikTT5XGRpLn","inputTextDelta":"."}
+
+data: {"type":"tool-input-delta","toolCallId":"call_rE9tRGc6uK6PKikTT5XGRpLn","inputTextDelta":"419"}
+
+data: {"type":"tool-input-delta","toolCallId":"call_rE9tRGc6uK6PKikTT5XGRpLn","inputTextDelta":"4"}
+
+data: {"type":"tool-input-delta","toolCallId":"call_rE9tRGc6uK6PKikTT5XGRpLn","inputTextDelta":",\""}
+
+data: {"type":"tool-input-delta","toolCallId":"call_rE9tRGc6uK6PKikTT5XGRpLn","inputTextDelta":"latitude"}
+
+data: {"type":"tool-input-delta","toolCallId":"call_rE9tRGc6uK6PKikTT5XGRpLn","inputTextDelta":"\":"}
+
+data: {"type":"tool-input-delta","toolCallId":"call_rE9tRGc6uK6PKikTT5XGRpLn","inputTextDelta":"37"}
+
+data: {"type":"tool-input-delta","toolCallId":"call_rE9tRGc6uK6PKikTT5XGRpLn","inputTextDelta":"."}
+
+data: {"type":"tool-input-delta","toolCallId":"call_rE9tRGc6uK6PKikTT5XGRpLn","inputTextDelta":"774"}
+
+data: {"type":"tool-input-delta","toolCallId":"call_rE9tRGc6uK6PKikTT5XGRpLn","inputTextDelta":"9"}
+
+data: {"type":"tool-input-delta","toolCallId":"call_rE9tRGc6uK6PKikTT5XGRpLn","inputTextDelta":"}"}
+
+data: {"type":"tool-input-available","toolCallId":"call_rE9tRGc6uK6PKikTT5XGRpLn","toolName":"weather_search","input":{"query":"San Francisco","longitude":-122.4194,"latitude":37.7749},"providerMetadata":{"openai":{"itemId":"fc_0ddaa6fca914a11600692e8c456bc0819cb66b5ab8fe23d667"}}}
+
+data: {"type":"finish-step"}
+
+data: {"type":"finish","finishReason":"tool-calls"}
+
+data: [DONE]
+

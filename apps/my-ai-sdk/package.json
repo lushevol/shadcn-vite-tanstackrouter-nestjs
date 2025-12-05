@@ -1,0 +1,28 @@
+{
+	"name": "my-ai-sdk",
+	"version": "1.0.0",
+	"description": "Custom AI SDK Provider",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"scripts": {
+		"build": "tsc",
+		"test": "ts-node test-provider.ts"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"@ai-sdk/provider": "^2.0.0",
+		"@ai-sdk/provider-utils": "^3.0.18",
+		"ai": "^5.0.106",
+		"dotenv": "^17.2.3",
+		"openai": "^4.104.0",
+		"zod": "^4.1.13"
+	},
+	"devDependencies": {
+		"@types/node": "^24.10.1",
+		"ts-node": "^10.9.2",
+		"tsx": "^4.21.0",
+		"typescript": "^5.9.3"
+	}
+}

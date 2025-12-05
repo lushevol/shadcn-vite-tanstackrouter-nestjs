@@ -1,6 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { ChatCompletionCreateParams } from "openai/resources";
-import type { Observable } from "rxjs";
+import { Observable } from "rxjs";
 import { endWith, finalize, map, tap } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 import { MyBotService } from "../bot/my-bot.service";
@@ -41,29 +41,17 @@ export class OpenAIService {
 		});
 		this.logger.log(`Bot response received for reqId=${reqId}`);
 
-		// 2. Handle Tool Calls (Return Immediately - No Streaming)
+		// 2. Handle Tool Calls (Streamed Standard Format)
 		if (botResponse.tool_calls) {
 			this.logger.log(
-				`Tool calls detected for reqId=${reqId}, returning tool_calls payload`,
+				`Tool calls detected for reqId=${reqId}, returning standard stream`,
 			);
-			return {
-				id: reqId,
-				object: "chat.completion",
+			return this.createStandardToolStream(
+				botResponse.tool_calls,
+				dto.model,
+				reqId,
 				created,
-				model: dto.model,
-				choices: [
-					{
-						index: 0,
-						message: {
-							role: "assistant",
-							content: null,
-							tool_calls: botResponse.tool_calls,
-						},
-						finish_reason: "tool_calls",
-					},
-				],
-				usage: { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 },
-			};
+			);
 		}
 
 		// 3. Process Text (Stop Sequences)
@@ -71,29 +59,8 @@ export class OpenAIService {
 			botResponse.content || "",
 			dto.stop,
 		);
-		try {
-			const contentPreview = cleanContent.slice(0, 500);
-			this.logger.debug(
-				`Clean content preview for reqId=${reqId}: ${contentPreview}`,
-			);
-		} catch {
-			this.logger.debug(
-				`Clean content processed for reqId=${reqId} (preview unavailable)`,
-			);
-		}
 
-		// 4. Calculate Usage
-		const usage = {
-			prompt_tokens: TextUtils.estimateTokens(JSON.stringify(dto.messages)),
-			completion_tokens: TextUtils.estimateTokens(cleanContent),
-			total_tokens: 0, // Sum not needed for this mock
-		};
-		usage.total_tokens = usage.prompt_tokens + usage.completion_tokens;
-		this.logger.log(
-			`Usage for reqId=${reqId}: prompt=${usage.prompt_tokens} completion=${usage.completion_tokens} total=${usage.total_tokens}`,
-		);
-
-		// 5. Return Stream or Static
+		// 4. Return Stream or Static
 		if (dto.stream) {
 			this.logger.log(`Creating streaming response for reqId=${reqId}`);
 			return this.createStream(cleanContent, dto.model, reqId, created);
@@ -111,9 +78,108 @@ export class OpenAIService {
 						finish_reason: "stop",
 					},
 				],
-				usage,
+				usage: {
+					prompt_tokens: 0,
+					completion_tokens: 0,
+					total_tokens: 0,
+				},
 			};
 		}
+	}
+
+	private createStandardToolStream(
+		toolCalls: any[],
+		model: string,
+		id: string,
+		created: number,
+	): Observable<any> {
+		return new Observable((subscriber) => {
+			(async () => {
+				// 1. Initial Chunk: Role + Tool Call Start
+				const toolCall = toolCalls[0]; // Assuming single tool call
+				const callId = toolCall.id;
+				const name = toolCall.function.name;
+				const args = toolCall.function.arguments;
+
+				const initialChunk = {
+					id,
+					object: "chat.completion.chunk",
+					created,
+					model,
+					choices: [
+						{
+							index: 0,
+							delta: {
+								role: "assistant",
+								content: null,
+								tool_calls: [
+									{
+										index: 0,
+										id: callId,
+										type: "function",
+										function: {
+											name: name,
+											arguments: "",
+										},
+									},
+								],
+							},
+							finish_reason: null,
+						},
+					],
+				};
+				subscriber.next(initialChunk);
+				await this.sleep(10);
+
+				// 2. Stream Arguments
+				const chunkSize = 5;
+				for (let i = 0; i < args.length; i += chunkSize) {
+					const chunkArg = args.slice(i, i + chunkSize);
+					const argChunk = {
+						id,
+						object: "chat.completion.chunk",
+						created,
+						model,
+						choices: [
+							{
+								index: 0,
+								delta: {
+									tool_calls: [
+										{
+											index: 0,
+											function: {
+												arguments: chunkArg,
+											},
+										},
+									],
+								},
+								finish_reason: null,
+							},
+						],
+					};
+					subscriber.next(argChunk);
+					await this.sleep(5);
+				}
+
+				// 3. Finish Chunk
+				const finishChunk = {
+					id,
+					object: "chat.completion.chunk",
+					created,
+					model,
+					choices: [
+						{
+							index: 0,
+							delta: {},
+							finish_reason: "tool_calls",
+						},
+					],
+				};
+				subscriber.next(finishChunk);
+				subscriber.next("[DONE]");
+				subscriber.complete();
+			})();
+		});
 	}
 
 	private createStream(
@@ -143,5 +209,9 @@ export class OpenAIService {
 				this.logger.log(`Stream observable finalized for id=${id}`),
 			),
 		);
+	}
+
+	private sleep(ms: number) {
+		return new Promise((resolve) => setTimeout(resolve, ms));
 	}
 }
