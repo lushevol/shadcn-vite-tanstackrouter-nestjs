@@ -1,6 +1,6 @@
 import { randomBytes, randomUUID } from "node:crypto";
 import { Injectable, UnauthorizedException } from "@nestjs/common";
-import type { JwtService } from "@nestjs/jwt";
+import { JwtService } from "@nestjs/jwt";
 import bcrypt from "bcrypt";
 import { eq } from "drizzle-orm";
 import { db } from "../db/db";
