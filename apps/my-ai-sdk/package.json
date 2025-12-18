@@ -17,8 +17,8 @@
 	"type": "module",
 	"scripts": {
 		"build": "rslib build",
-		"test:provider": "tsx __tests__/test-provider.ts",
-		"test:streamtext": "tsx __tests__/test-streamtext.ts"
+		"test:provider": "tsx src/__tests__/test-provider.ts",
+		"test:streamtext": "tsx src/__tests__/test-streamtext.ts"
 	},
 	"keywords": [],
 	"author": "",

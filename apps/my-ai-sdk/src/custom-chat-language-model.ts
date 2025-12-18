@@ -99,7 +99,10 @@ export class CustomChatLanguageModel implements LanguageModelV2 {
 					function: {
 						name: tool.name,
 						description: tool.description,
-						parameters: tool.inputSchema as Record<string, unknown>,
+						parameters: {
+							type: "object",
+							...(tool.inputSchema as Record<string, unknown>),
+						},
 					},
 				};
 			}
@@ -116,6 +119,7 @@ export class CustomChatLanguageModel implements LanguageModelV2 {
 
 	async doGenerate(options: LanguageModelV2CallOptions) {
 		const { args, warnings } = this.getArgs(options);
+		console.log(`[CustomChatLanguageModel.doGenerate] Request:`, JSON.stringify(args, null, 2));
 
 		const response = await fetch(`${this.config.baseURL}/chat/completions`, {
 			method: "POST",
@@ -128,10 +132,11 @@ export class CustomChatLanguageModel implements LanguageModelV2 {
 		});
 
 		if (!response.ok) {
-			this.handleError(response);
+			await this.handleError(response);
 		}
 
 		const responseBody = (await response.json()) as ChatCompletion;
+		console.log(`[CustomChatLanguageModel.doGenerate] Response:`, JSON.stringify(responseBody, null, 2));
 
 		const content: LanguageModelV2Content[] = [];
 
@@ -176,6 +181,7 @@ export class CustomChatLanguageModel implements LanguageModelV2 {
 
 	async doStream(options: LanguageModelV2CallOptions) {
 		const { args, warnings } = this.getArgs(options);
+		console.log(`[CustomChatLanguageModel.doStream] Request:`, JSON.stringify({ ...args, stream: true }, null, 2));
 
 		const response = await fetch(`${this.config.baseURL}/chat/completions`, {
 			method: "POST",
@@ -188,7 +194,7 @@ export class CustomChatLanguageModel implements LanguageModelV2 {
 		});
 
 		if (!response.ok) {
-			this.handleError(response);
+			await this.handleError(response);
 		}
 
 		if (!response.body) {
@@ -237,6 +243,8 @@ export class CustomChatLanguageModel implements LanguageModelV2 {
 		let isFirstChunk = true;
 		const self = this;
 		const toolCallIds = new Map<number, string>();
+		const toolCallArgs = new Map<number, string>();
+		const toolCallNames = new Map<number, string>();
 		const startedTextIds = new Set<string>();
 
 		return new TransformStream<ChatCompletionChunk, LanguageModelV2StreamPart>({
@@ -269,28 +277,48 @@ export class CustomChatLanguageModel implements LanguageModelV2 {
 
 						if (toolCall.id) {
 							toolCallIds.set(index, toolCall.id);
-							if (toolCall.function?.name) {
-								controller.enqueue({
-									type: "tool-input-start",
-									toolName: toolCall.function.name,
-									id: toolCall.id,
-								});
-							}
+							// Initialize args buffer for this tool call
+							toolCallArgs.set(index, "");
+						}
+						
+						if (toolCall.function?.name) {
+							toolCallNames.set(index, toolCall.function.name);
+							controller.enqueue({
+								type: "tool-input-start",
+								toolName: toolCall.function.name,
+								id: toolCallIds.get(index) || "",
+							});
 						}
 
 						const id = toolCallIds.get(index);
+						const argsDelta = toolCall.function?.arguments;
 
-						if (id && toolCall.function?.arguments) {
+						if (id && argsDelta) {
+							toolCallArgs.set(index, (toolCallArgs.get(index) || "") + argsDelta);
 							controller.enqueue({
 								type: "tool-input-delta",
 								id: id,
-								delta: toolCall.function.arguments,
+								delta: argsDelta,
 							});
 						}
 					}
 				}
 
 				if (chunk.choices?.[0]?.finish_reason) {
+					// Emit accumulated tool calls before finish
+					for (const [index, id] of toolCallIds.entries()) {
+						const name = toolCallNames.get(index);
+						const args = toolCallArgs.get(index);
+						if (name && args !== undefined) {
+							controller.enqueue({
+								type: "tool-call",
+								toolCallId: id,
+								toolName: name,
+								input: args,
+							});
+						}
+					}
+
 					controller.enqueue({
 						type: "finish",
 						finishReason: self.mapFinishReason(chunk.choices[0].finish_reason),
@@ -421,8 +449,24 @@ export class CustomChatLanguageModel implements LanguageModelV2 {
 		}
 	}
 
-	private handleError(error: Response): never {
+	private async handleError(error: Response): Promise<never> {
 		const status = error.status;
+		let errorMessage = `API call failed with status ${status}`;
+		let errorBody = {};
+
+		try {
+			errorBody = await error.json();
+			errorMessage = `API error (${status}): ${JSON.stringify(errorBody)}`;
+		} catch (e) {
+			// fallback to text if JSON fails
+			try {
+				errorMessage = `API error (${status}): ${await error.text()}`;
+			} catch (re) {
+				// ignore
+			}
+		}
+
+		console.error(`[CustomChatLanguageModel.handleError]`, errorMessage);
 
 		if (status === 429) {
 			throw new APICallError({
@@ -435,7 +479,7 @@ export class CustomChatLanguageModel implements LanguageModelV2 {
 		}
 
 		throw new APICallError({
-			message: `API call failed with status ${status}`,
+			message: errorMessage,
 			statusCode: status,
 			url: error.url,
 			requestBodyValues: {}, // Placeholder

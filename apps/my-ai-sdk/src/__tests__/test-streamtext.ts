@@ -1,5 +1,5 @@
 import { streamText } from "ai";
-import { createCustomProvider } from "../src/provider";
+import { createCustomProvider } from "../provider";
 import "dotenv/config";
 
 async function testProvider() {
@@ -23,8 +23,8 @@ async function testProvider() {
 	const reader = result.fullStream.getReader();
 	while (true) {
 		const { value, done } = await reader.read();
-        if (done) break;
-        console.log(value);
+		if (done) break;
+		console.log(value);
 	}
 }
 
