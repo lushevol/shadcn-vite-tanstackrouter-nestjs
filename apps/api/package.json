@@ -6,6 +6,7 @@
 		"build": "nest build",
 		"start": "node dist/main.js",
 		"dev": "nest start --watch",
+		"debug": "nest start --watch --debug",
 		"lint": "eslint .",
 		"test": "echo \"No tests yet\"",
 		"db:generate": "drizzle-kit generate",

@@ -33,7 +33,12 @@
 	},
 	"overrides": [
 		{
-			"includes": ["**/*.controller.ts", "**/*.service.ts"],
+			"includes": [
+				"**/*.controller.ts",
+				"**/*.service.ts",
+				"**/*.resolver.ts",
+				"**/*.guard.ts"
+			],
 			"linter": {
 				"rules": {
 					"style": {
