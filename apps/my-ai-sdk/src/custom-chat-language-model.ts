@@ -237,6 +237,7 @@ export class CustomChatLanguageModel implements LanguageModelV2 {
 		let isFirstChunk = true;
 		const self = this;
 		const toolCallIds = new Map<number, string>();
+		const startedTextIds = new Set<string>();
 
 		return new TransformStream<ChatCompletionChunk, LanguageModelV2StreamPart>({
 			async transform(chunk, controller) {
@@ -246,9 +247,18 @@ export class CustomChatLanguageModel implements LanguageModelV2 {
 				}
 
 				if (chunk.choices?.[0]?.delta?.content) {
+					const id = chunk.id || "";
+					if (!startedTextIds.has(id)) {
+						controller.enqueue({
+							type: "text-start",
+							id,
+						});
+						startedTextIds.add(id);
+					}
+
 					controller.enqueue({
 						type: "text-delta",
-						id: chunk.id || "",
+						id,
 						delta: chunk.choices[0].delta.content,
 					});
 				}
