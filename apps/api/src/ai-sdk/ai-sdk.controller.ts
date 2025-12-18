@@ -2,12 +2,15 @@ import { Controller, Post, Req, Res } from '@nestjs/common';
 import { convertToModelMessages, streamText, UIMessage } from 'ai';
 import type { Request, Response } from 'express';
 import { createCustomProvider } from 'my-ai-sdk';
+import { Public } from '../auth/decorators/public.decorator';
 
+import 'dotenv/config';
 const openai = createCustomProvider({
-  baseURL: process.env.DEEPSEEK_API_BASE_URL!,
+  baseURL: process.env.DEEPSEEK_BASE_URL!,
   apiKey: process.env.DEEPSEEK_API_KEY!,
 })
 
+@Public()
 @Controller('api')
 export class AiSdkController {
   @Post("/chat")

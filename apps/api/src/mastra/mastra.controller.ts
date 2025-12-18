@@ -6,7 +6,7 @@ import { Public } from '../auth/decorators/public.decorator';
 import { MastraService } from './mastra.service';
 import 'dotenv/config';
 
-const openai = new OpenAI({ baseURL: process.env.DEEPSEEK_API_BASE_URL!, apiKey: process.env.DEEPSEEK_API_KEY! });
+const openai = new OpenAI({ baseURL: process.env.DEEPSEEK_BASE_URL!, apiKey: process.env.DEEPSEEK_API_KEY! });
 
 @Controller('api/copilotkit')
 export class MastraController {

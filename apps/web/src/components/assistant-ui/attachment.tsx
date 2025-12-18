@@ -8,7 +8,6 @@ import {
 	useAssistantState,
 } from "@assistant-ui/react";
 import { FileText, PlusIcon, XIcon } from "lucide-react";
-import Image from "next/image";
 import { type FC, type PropsWithChildren, useEffect, useState } from "react";
 import { useShallow } from "zustand/shallow";
 import { TooltipIconButton } from "@/components/assistant-ui/tooltip-icon-button";
@@ -68,7 +67,7 @@ type AttachmentPreviewProps = {
 const AttachmentPreview: FC<AttachmentPreviewProps> = ({ src }) => {
 	const [isLoaded, setIsLoaded] = useState(false);
 	return (
-		<Image
+		<AvatarImage
 			src={src}
 			alt="Image Preview"
 			width={1}
@@ -78,8 +77,6 @@ const AttachmentPreview: FC<AttachmentPreviewProps> = ({ src }) => {
 					? "aui-attachment-preview-image-loaded block h-auto max-h-[80vh] w-auto max-w-full object-contain"
 					: "aui-attachment-preview-image-loading hidden"
 			}
-			onLoadingComplete={() => setIsLoaded(true)}
-			priority={false}
 		/>
 	);
 };
