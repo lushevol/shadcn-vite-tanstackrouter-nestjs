@@ -1,10 +1,9 @@
-import { createOpenAI } from '@ai-sdk/openai';
 import { Controller, Post, Req, Res } from '@nestjs/common';
 import { convertToModelMessages, streamText, UIMessage } from 'ai';
 import type { Request, Response } from 'express';
+import { createCustomProvider } from 'my-ai-sdk';
 
-const openai = createOpenAI({
-  name: "openai",
+const openai = createCustomProvider({
   baseURL: process.env.DEEPSEEK_API_BASE_URL!,
   apiKey: process.env.DEEPSEEK_API_KEY!,
 })
@@ -15,7 +14,7 @@ export class AiSdkController {
   async chat(@Req() req: Request, @Res() res: Response) {
     const { messages }: { messages: UIMessage[] } = req.body;
     const result = streamText({
-      model: openai.chat("deepseek-chat"),
+      model: openai.languageModel("deepseek-chat"),
       messages: convertToModelMessages(messages),
     });
 

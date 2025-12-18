@@ -1,6 +1,6 @@
 import { generateObject, generateText, streamText, tool } from "ai";
 import { z } from "zod";
-import { createCustomProvider } from "./src/provider";
+import { createCustomProvider } from "../src/provider";
 import "dotenv/config";
 import { stepCountIs } from "ai";
 

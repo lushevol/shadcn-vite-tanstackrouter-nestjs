@@ -1,4 +1,4 @@
-import { createCustomProvider } from "./src/provider";
+import { createCustomProvider } from "../src/provider";
 import "dotenv/config";
 
 async function testProvider() {

@@ -16,7 +16,7 @@ import type {
 	ChatCompletionCreateParams,
 	ChatCompletionMessageToolCall,
 	ChatCompletionTool,
-} from "openai/resources/chat";
+} from "openai/resources.mjs";
 import type { CustomChatSettings } from "./provider";
 
 export interface CustomChatConfig {

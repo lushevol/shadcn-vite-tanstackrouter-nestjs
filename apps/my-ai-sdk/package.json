@@ -2,11 +2,23 @@
 	"name": "my-ai-sdk",
 	"version": "1.0.0",
 	"description": "Custom AI SDK Provider",
-	"main": "dist/index.js",
-	"types": "dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
+		}
+	},
+	"main": "./dist/index.cjs",
+	"types": "./dist/index.d.ts",
+	"files": [
+		"dist"
+	],
+	"type": "module",
 	"scripts": {
-		"build": "tsc",
-		"test": "ts-node test-provider.ts"
+		"build": "rslib build",
+		"test:provider": "tsx __tests__/test-provider.ts",
+		"test:streamtext": "tsx __tests__/test-streamtext.ts"
 	},
 	"keywords": [],
 	"author": "",
@@ -14,13 +26,15 @@
 	"dependencies": {
 		"@ai-sdk/provider": "^2.0.0",
 		"@ai-sdk/provider-utils": "^3.0.18",
-		"ai": "^5.0.106",
 		"dotenv": "^17.2.3",
 		"openai": "^4.104.0",
 		"zod": "^4.1.13"
 	},
 	"devDependencies": {
+		"@ai-sdk/openai": "^2.0.71",
+		"@rslib/core": "^0.18.0",
 		"@types/node": "^24.10.1",
+		"ai": "^5.0.106",
 		"ts-node": "^10.9.2",
 		"tsx": "^4.21.0",
 		"typescript": "^5.9.3"

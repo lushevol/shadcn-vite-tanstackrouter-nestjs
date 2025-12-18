@@ -8,6 +8,7 @@ export class MastraService {
 		message: string,
 	): Promise<GenerateTextResult<any, undefined>> {
 		const agent = mastra.getAgent("weatherAgent");
+		// @ts-expect-error
 		return agent.generateLegacy(message);
 	}
 }
