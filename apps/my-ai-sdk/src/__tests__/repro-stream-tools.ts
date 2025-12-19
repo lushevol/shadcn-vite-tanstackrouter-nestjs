@@ -21,17 +21,30 @@ async function runReproduction() {
       tools: {
         weatherTool: tool({
           description: "Get the weather in a location",
-          parameters: z.object({
-            location: z.string().describe("The location to get the weather for"),
+          inputSchema: z.object({
+            location: z.string(),
           }),
-          // @ts-expect-error
-          execute: async ({ location }: { location: string }) => {
+          outputSchema: z.object({
+            location: z.string(),
+            temperature: z.number(),
+            condition: z.string(),
+          }),
+          execute: async ({ location }) => {
             console.log(`[Tool Executed] weatherTool called with location: ${location}`);
             return {
               location,
               temperature: 72,
               condition: "Sunny",
             };
+          },
+          onInputAvailable(options) {
+            console.log(`[Tool Input Available] weatherTool called with location: ${options.input.location}`);
+          },
+          onInputDelta(options) {
+            console.log(`[Tool Input Delta] weatherTool called with location: ${options.inputTextDelta}`);
+          },
+          onInputStart(options) {
+            console.log(`[Tool Input Start] weatherTool called with location: ${options.messages}`);
           },
         }),
       },

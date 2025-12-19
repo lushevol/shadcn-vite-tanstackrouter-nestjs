@@ -149,10 +149,17 @@ export class CustomChatLanguageModel implements LanguageModelV2 {
 
 		if (responseBody.choices?.[0]?.message?.tool_calls) {
 			for (const toolCall of responseBody.choices[0].message.tool_calls) {
-				const args =
-					typeof toolCall.function.arguments === "string"
-						? toolCall.function.arguments
-						: JSON.stringify(toolCall.function.arguments);
+				let args = toolCall.function.arguments;
+
+				if (typeof args === "string") {
+					try {
+						args = JSON.parse(args);
+					} catch (error) {
+						console.error(
+							`[CustomChatLanguageModel.doGenerate] Failed to parse tool arguments: ${args}`,
+						);
+					}
+				}
 
 				content.push({
 					type: "tool-call",
@@ -310,11 +317,19 @@ export class CustomChatLanguageModel implements LanguageModelV2 {
 						const name = toolCallNames.get(index);
 						const args = toolCallArgs.get(index);
 						if (name && args !== undefined) {
+							let parsedArgs = args;
+							try {
+								parsedArgs = JSON.parse(args);
+							} catch (error) {
+								console.error(
+									`[CustomChatLanguageModel.doStream] Failed to parse tool arguments: ${args}`,
+								);
+							}
 							controller.enqueue({
 								type: "tool-call",
 								toolCallId: id,
 								toolName: name,
-								input: args,
+								input: parsedArgs,
 							});
 						}
 					}

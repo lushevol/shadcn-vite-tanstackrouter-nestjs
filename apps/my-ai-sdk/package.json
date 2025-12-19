@@ -18,7 +18,8 @@
 	"scripts": {
 		"build": "rslib build",
 		"test:provider": "tsx src/__tests__/test-provider.ts",
-		"test:streamtext": "tsx src/__tests__/test-streamtext.ts"
+		"test:streamtext": "tsx src/__tests__/test-streamtext.ts",
+		"test:tool": "tsx src/__tests__/repro-stream-tools.ts"
 	},
 	"keywords": [],
 	"author": "",
